@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Pixels por Proporção</title>
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon_invertido.png" media="(prefers-color-scheme: light)">
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon.png" media="(prefers-color-scheme: dark)">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b1f27;--mut:#667085;--bd:#dfe3ea;--pri:#ff0000;--ok:#047857;--bad:#b42318}
+@media(prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b2029;--tx:#e8ebf0;--mut:#98a2b3;--bd:#2c3340;--pri:#ff0000;--ok:#34d399;--bad:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;font:20px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+.logo{display:block;max-width:200px;max-height:90px;height:auto;margin:0 auto 12px}
+.logolink{display:block;width:fit-content;margin:0 auto}
+h1{font-size:1.6rem;margin:8px 0 4px}
+p.sub{color:var(--mut);margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{font-size:1rem;margin:0 0 12px}
+label{display:block;font-size:.85rem;color:var(--mut);margin:10px 0 4px}
+input,select{width:100%;padding:10px 12px;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{width:100%;padding:14px;font:inherit;font-weight:600;background:var(--pri);color:#fff;border:0;border-radius:10px;cursor:pointer}
+.hide{display:none}
+#res{display:none}
+.big{font-size:1.25rem;font-weight:700;margin:0 0 8px}
+.ok{color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:8px}
+td{padding:7px 0;border-bottom:1px solid var(--bd)}td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.note{font-size:.8rem;color:var(--mut);margin-top:16px}
+.prev{margin:14px auto 0;display:flex;align-items:center;justify-content:center;height:140px}
+.prev div{border:2px solid var(--pri);border-radius:6px;background:color-mix(in srgb,var(--pri) 8%,transparent)}
+.sec{margin-top:10px;background:transparent;color:var(--tx);border:1px solid var(--bd)}
+</style>
+</head>
+<body>
+<main>
+<a class="logolink" href="https://tools.gpstreaming.com.br">
+<picture>
+  <source srcset="https://tools.gpstreaming.com.br/img/logo.png" media="(prefers-color-scheme: dark)">
+  <img class="logo" src="https://tools.gpstreaming.com.br/img/logo_invertido.png" alt="Logo">
+</picture>
+</a>
+<h1>Calculadora de Pixels por Proporção</h1>
+<p class="sub">Digite um lado da imagem e descubra o outro para manter a proporção desejada.</p>
+
+<section>
+<h2>📐 Proporção</h2>
+<label for="ratio">Escolha a proporção</label>
+<select id="ratio">
+<option value="16:9" selected>16:9 — Widescreen (Full HD, 4K, YouTube)</option>
+<option value="9:16">9:16 — Vertical (Reels, Stories, TikTok)</option>
+<option value="4:3">4:3 — Clássico</option>
+<option value="3:4">3:4 — Retrato clássico</option>
+<option value="21:9">21:9 — Ultrawide</option>
+<option value="9:21">9:21 — Ultrawide vertical</option>
+<option value="32:9">32:9 — Super ultrawide</option>
+<option value="1:1">1:1 — Quadrado</option>
+<option value="3:2">3:2 — Fotografia</option>
+<option value="2:3">2:3 — Fotografia vertical</option>
+<option value="5:4">5:4</option>
+<option value="4:5">4:5 — Feed Instagram vertical</option>
+<option value="2:1">2:1</option>
+<option value="1:2">1:2</option>
+<option value="17:9">17:9 — DCI 4K</option>
+<option value="custom">Personalizar…</option>
+</select>
+<div id="custom" class="hide">
+<div class="row">
+<div><label for="cw">Proporção — largura</label><input id="cw" class="dec" type="text" inputmode="decimal" autocomplete="off" value="16"></div>
+<div><label for="ch">Proporção — altura</label><input id="ch" class="dec" type="text" inputmode="decimal" autocomplete="off" value="9"></div>
+</div>
+</div>
+</section>
+
+<section>
+<h2>🔢 Qual medida você tem?</h2>
+<div class="row">
+<div>
+<label for="modo">Eu tenho a</label>
+<select id="modo"><option value="w" selected>Largura</option><option value="h">Altura</option></select>
+</div>
+<div>
+<label for="val" id="lVal">Largura (px)</label>
+<input id="val" type="text" inputmode="numeric" autocomplete="off" value="3840">
+</div>
+</div>
+</section>
+
+<section id="res">
+<p class="big ok" id="out"></p>
+<p style="margin:0 0 8px" id="msg"></p>
+<table id="tb"></table>
+<div class="prev"><div id="box"></div></div>
+<button class="sec" id="copy" type="button">Copiar resolução</button>
+</section>
+
+<p class="note">Quando o resultado não é um número inteiro, ele é arredondado para o pixel mais próximo. Por isso a proporção final pode ter uma diferença mínima da original.</p>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{let v=$(id).value.trim().replace(/\s/g,'');
+  if(v.includes(','))v=v.replace(/\./g,'').replace(',','.');
+  else if(/^\d{1,3}(\.\d{3})+$/.test(v))v=v.replace(/\./g,'');
+  return parseFloat(v);};
+const int=v=>v.toLocaleString('pt-BR',{maximumFractionDigits:0});
+const dec=v=>v.toLocaleString('pt-BR',{maximumFractionDigits:3});
+let last='';
+
+function ratio(){
+  if($('ratio').value==='custom')return[num('cw'),num('ch')];
+  return $('ratio').value.split(':').map(Number);
+}
+
+function calc(){
+  const [rw,rh]=ratio(),m=$('modo').value,v=num('val'),res=$('res');
+  if(!(rw>0)||!(rh>0)||!(v>0)){res.style.display='none';return;}
+  const exact=m==='w'?v*rh/rw:v*rw/rh;
+  const rounded=Math.max(1,Math.round(exact));
+  const W=m==='w'?Math.round(v):rounded,H=m==='w'?rounded:Math.round(v);
+  const frac=Math.abs(exact-Math.round(exact))>1e-9;
+  last=W+' x '+H;
+  res.style.display='block';
+  $('out').textContent=int(W)+' × '+int(H)+' px';
+  $('msg').innerHTML=m==='w'
+    ?`Para <b>${int(W)} px</b> de largura, a altura deve ser <b>${int(H)} px</b>.`
+    :`Para <b>${int(H)} px</b> de altura, a largura deve ser <b>${int(W)} px</b>.`;
+  $('tb').innerHTML=`
+  <tr><td>Largura</td><td>${int(W)} px</td></tr>
+  <tr><td>Altura</td><td>${int(H)} px</td></tr>
+  <tr><td>Proporção escolhida</td><td>${dec(rw)}:${dec(rh)}</td></tr>
+  <tr><td>Valor calculado${frac?' (antes de arredondar)':''}</td><td>${dec(exact)} px</td></tr>
+  <tr><td>Total de pixels</td><td>${int(W*H)}</td></tr>`;
+  const mx=140,k=Math.min(mx*1.6/W,mx/H),b=$('box');
+  b.style.width=Math.max(4,W*k)+'px';b.style.height=Math.max(4,H*k)+'px';
+}
+
+document.querySelectorAll('.dec').forEach(el=>el.addEventListener('input',()=>{el.value=el.value.replace(/[^\d.,]/g,'');calc();}));
+$('val').addEventListener('input',()=>{$('val').value=$('val').value.replace(/[^\d.,]/g,'');calc();});
+$('ratio').onchange=()=>{$('custom').classList.toggle('hide',$('ratio').value!=='custom');calc();};
+$('modo').onchange=()=>{$('lVal').textContent=$('modo').value==='w'?'Largura (px)':'Altura (px)';calc();};
+$('copy').onclick=async()=>{
+  const b=$('copy'),t=b.textContent;
+  try{await navigator.clipboard.writeText(last);b.textContent='Copiado!';}catch(e){b.textContent='Não foi possível copiar';}
+  setTimeout(()=>b.textContent=t,1500);
+};
+calc();
+</script>
+</body>
+</html>

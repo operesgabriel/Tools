@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Título</title>
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon_invertido.png" media="(prefers-color-scheme: light)">
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon.png" media="(prefers-color-scheme: dark)">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b1f27;--mut:#667085;--bd:#dfe3ea;--pri:#ff0000}
+@media(prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b2029;--tx:#e8ebf0;--mut:#98a2b3;--bd:#2c3340;--pri:#ff0000}}
+*{box-sizing:border-box}
+body{margin:0;font:20px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.logo{display:block;max-width:200px;max-height:90px;height:auto;margin:0 auto 12px}
+.logolink{display:block;width:fit-content;margin:0 auto}
+h1{font-size:1.6rem;margin:8px 0 20px;text-align:center}
+
+.grid{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+/* 4 por linha no notebook, 2 por linha no celular; poucos cards ficam centralizados */
+.card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  width:calc((100% - 3*14px)/4);aspect-ratio:1/1;
+  background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;
+  color:var(--tx);text-decoration:none;text-align:center;transition:border-color .15s,transform .15s}
+.card:hover,.card:focus-visible{border-color:var(--pri);transform:translateY(-2px);outline:none}
+.card:active{transform:translateY(0)}
+
+/* TAMANHO DO EMOJI: altere o valor de --emoji-size em cada card (ex.: 3rem, 80px, 6rem) */
+.emoji{font-size:var(--emoji-size,4rem);line-height:1}
+
+.txt{font-size:1rem;color:var(--tx);margin:0}
+@media(max-width:600px){.card{width:calc((100% - 14px)/2)}}
+</style>
+</head>
+<body>
+<main>
+<a class="logolink" href="https://tools.gpstreaming.com.br" target="_blank" rel="noopener">
+<picture>
+  <source srcset="https://tools.gpstreaming.com.br/img/logo.png" media="(prefers-color-scheme: dark)">
+  <img class="logo" src="https://tools.gpstreaming.com.br/img/logo_invertido.png" alt="Logo">
+</picture>
+</a>
+<h1>Tools - GP Streaming</h1>
+
+<div class="grid">
+<!-- CARD 1: troque "link1" pela URL, o emoji dentro do span e o tamanho em --emoji-size -->
+<a class="card" href="https://tools.gpstreaming.com.br/resolucao">
+  <span class="emoji" style="--emoji-size:4rem">📺</span>
+  <p class="txt">PIXELS POR PROPORÇÃO</p>
+</a>
+
+<!-- CARD 2: troque "link2" pela URL, o emoji dentro do span e o tamanho em --emoji-size -->
+<a class="card" href="https://tools.gpstreaming.com.br/a_vista_parcelado">
+  <span class="emoji" style="--emoji-size:4rem">💶</span>
+  <p class="txt">À VISTA OU PARCELADO</p>
+</a>
+</div>
+</main>
+</body>
+</html>
