@@ -23,7 +23,7 @@ input,select{width:100%;padding:10px 12px;font:inherit;color:var(--tx);backgroun
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .chk{display:flex;gap:8px;align-items:center;margin-top:12px;color:var(--tx);font-size:.95rem}
 .chk input{width:auto}
-button{width:100%;padding:14px;font:inherit;font-weight:600;background:var(--pri);color:#fff;border:0;border-radius:10px;cursor:pointer}
+button{width:100%;padding:14px;font:inherit;font-weight:600;background:var(--pri);color:#fff;border:0;border-radius:14px;cursor:pointer}
 @media(prefers-color-scheme:dark){button{color:#ffffff}}
 #res{display:none}
 .big{font-size:1.25rem;font-weight:700;margin:0 0 8px}
@@ -38,6 +38,9 @@ td{padding:7px 0;border-bottom:1px solid var(--bd)}td:last-child{text-align:righ
 .lg{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--mut);margin:0 0 6px}
 .lg i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px}
 #chartRd{font-size:.88rem;margin:6px 0 0;min-height:2.6em}
+.back{display:block;width:fit-content;margin:24px auto 0;padding:12px 24px;border-radius:14px;background:var(--pri);border:3px solid var(--pri);color:#fff;font-size:1rem;font-weight:600;text-decoration:none;transition:transform .15s,filter .15s}
+.back:hover,.back:focus-visible{filter:brightness(1.1);transform:translateY(-2px);outline:none}
+.back:active{transform:translateY(0)}
 </style>
 </head>
 <body>
@@ -105,6 +108,7 @@ td{padding:7px 0;border-bottom:1px solid var(--bd)}td:last-child{text-align:righ
 <section id="res" style="margin-top:14px"></section>
 
 <p class="note">Premissas: o dinheiro está disponível hoje e fica aplicado com liquidez diária; as parcelas saem do resgate dessa aplicação, mês a mês. Usa-se o mês de 30 dias para o IR, e taxas de custódia são ignoradas. Taxas futuras não variam. É uma estimativa para apoiar a decisão, não uma recomendação financeira.</p>
+<a class="back" href="https://tools.gpstreaming.com.br">Voltar para Tools</a>
 </main>
 
 <script>
