@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Porcentagem</title>
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon_invertido.png" media="(prefers-color-scheme: light)">
+<link rel="icon" href="https://tools.gpstreaming.com.br/img/favicon.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="https://tools.gpstreaming.com.br/img/apple.png">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b1f27;--mut:#667085;--bd:#dfe3ea;--pri:#ff0000;--ok:#047857;--bad:#b42318}
+@media(prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b2029;--tx:#e8ebf0;--mut:#98a2b3;--bd:#2c3340;--pri:#ff0000;--ok:#34d399;--bad:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;font:20px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+.logo{display:block;max-width:200px;max-height:90px;height:auto;margin:0 auto 12px}
+.logolink{display:block;width:fit-content;margin:0 auto}
+h1{font-size:1.6rem;margin:8px 0 4px}
+p.sub{color:var(--mut);margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{font-size:1rem;margin:0 0 4px}
+h3.grp{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:26px 4px 10px}
+label{display:block;font-size:.85rem;color:var(--mut);margin:10px 0 4px}
+input,select{width:100%;padding:10px 12px;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px}
+input:focus,select:focus{outline:2px solid var(--pri);outline-offset:-1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.row{grid-template-columns:1fr;gap:0}}
+button{width:100%;padding:14px;font:inherit;font-weight:600;background:var(--pri);color:#fff;border:0;border-radius:10px;cursor:pointer}
+.hide{display:none}
+.r{display:none;margin-top:16px;padding-top:12px;border-top:1px solid var(--bd)}
+.big{font-size:1.25rem;font-weight:700;margin:0 0 8px}
+.ok{color:var(--ok)}
+.bad{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:8px}
+td{padding:7px 0;border-bottom:1px solid var(--bd)}td:last-child{text-align:right;font-variant-numeric:tabular-nums;padding-left:12px}
+.note{font-size:.8rem;color:var(--mut);margin-top:16px}
+.rn{font-size:.85rem;color:var(--mut);margin:8px 0 0}
+.sec{margin-top:12px;padding:10px;background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.back{display:block;width:fit-content;margin:24px auto 0;padding:12px 24px;border-radius:14px;background:var(--pri);border:3px solid var(--pri);color:#fff;font-size:1rem;font-weight:600;text-decoration:none;transition:transform .15s,filter .15s}
+.back:hover,.back:focus-visible{filter:brightness(1.1);transform:translateY(-2px);outline:none}
+.back:active{transform:translateY(0)}
+</style>
+</head>
+<body>
+<main>
+<a class="logolink" href="https://tools.gpstreaming.com.br">
+<picture>
+  <source srcset="https://tools.gpstreaming.com.br/img/logo.png" media="(prefers-color-scheme: dark)">
+  <img class="logo" src="https://tools.gpstreaming.com.br/img/logo_invertido.png" alt="Logo">
+</picture>
+</a>
+<h1>Calculadora de Porcentagem</h1>
+<p class="sub">Escolha o tipo de cálculo, preencha os campos e o resultado aparece na hora.</p>
+
+<section>
+<label for="q" style="margin-top:0">🔎 Buscar cálculo</label>
+<input id="q" type="text" autocomplete="off" placeholder="Ex.: desconto, margem, juros…">
+</section>
+
+<div id="list"></div>
+
+<p class="note">Os resultados mostram até 4 casas decimais. Aceita vírgula ou ponto como separador decimal e pontos como milhar (ex.: 1.500,75).</p>
+<a class="back" href="https://tools.gpstreaming.com.br">Voltar para Tools</a>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{let v=$(id).value.trim().replace(/\s/g,'');
+  if(v.includes(','))v=v.replace(/\./g,'').replace(',','.');
+  else if(/^-?\d{1,3}(\.\d{3})+$/.test(v))v=v.replace(/\./g,'');
+  return parseFloat(v);};
+const d=n=>(Math.round(n*1e8)/1e8).toLocaleString('pt-BR',{maximumFractionDigits:4});
+const P=n=>d(n)+'%';
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const UP='Acréscimo',DN='Desconto';
+
+const C=[
+{t:'📊 Quanto é X% de Y?',f:[['p','Porcentagem (%)','Ex.: 20'],['v','Valor','Ex.: 150']],
+ fn:v=>{const r=v.p*v.v/100;return{m:`${P(v.p)} de ${d(v.v)} = ${d(r)}`,l:[['Resultado',d(r)],['Cálculo',`${d(v.v)} × ${d(v.p)} ÷ 100`]]}}},
+{t:'🎯 O valor X é qual porcentagem de Y?',f:[['a','Valor X','Ex.: 30'],['b','Valor Y (total)','Ex.: 150']],
+ fn:v=>{if(!v.b)return;const r=v.a/v.b*100;return{m:`${d(v.a)} é ${P(r)} de ${d(v.b)}`,l:[['Percentual',P(r)],['Cálculo',`${d(v.a)} ÷ ${d(v.b)} × 100`]]}}},
+{t:'📈 Aumento percentual',h:'Um valor aumentou de A para B. Qual foi o aumento?',f:[['a','Valor inicial','Ex.: 100'],['b','Valor final','Ex.: 130']],
+ fn:v=>{if(!v.a)return;const r=(v.b-v.a)/v.a*100;return{m:r>=0?`Aumento de ${P(r)}`:`Na verdade diminuiu ${P(-r)}`,l:[['Diferença',d(v.b-v.a)],['Variação',P(r)],['Cálculo',`(${d(v.b)} − ${d(v.a)}) ÷ ${d(v.a)} × 100`]]}}},
+{t:'📉 Diminuição percentual',h:'Um valor diminuiu de A para B. Qual foi a queda?',f:[['a','Valor inicial','Ex.: 200'],['b','Valor final','Ex.: 150']],
+ fn:v=>{if(!v.a)return;const r=(v.a-v.b)/v.a*100;return{m:r>=0?`Diminuição de ${P(r)}`:`Na verdade aumentou ${P(-r)}`,l:[['Diferença',d(v.a-v.b)],['Variação',P(-r)],['Cálculo',`(${d(v.a)} − ${d(v.b)}) ÷ ${d(v.a)} × 100`]]}}},
+{t:'⚖️ O valor A sobre o valor B é quantos por cento?',h:'Compara A em relação a B (B é a base).',f:[['a','Valor A','Ex.: 120'],['b','Valor B (base)','Ex.: 100']],
+ fn:v=>{if(!v.b)return;const r=(v.a-v.b)/v.b*100;return{m:r===0?`${d(v.a)} é igual a ${d(v.b)}`:`${d(v.a)} está ${P(Math.abs(r))} ${r>0?'acima':'abaixo'} de ${d(v.b)}`,l:[['Variação de A sobre B',P(r)],['A como % de B',P(v.a/v.b*100)],['Diferença',d(v.a-v.b)]]}}},
+{t:'➕ Aumentar um valor em X%',f:[['v','Valor','Ex.: 500'],['p','Aumentar em (%)','Ex.: 10']],
+ fn:v=>{const r=v.v*(1+v.p/100);return{m:`${d(v.v)} + ${P(v.p)} = ${d(r)}`,l:[['Valor final',d(r)],['Acréscimo',d(v.v*v.p/100)],['Multiplicador',`× ${d(1+v.p/100)}`]]}}},
+{t:'➖ Diminuir um valor em X% (desconto)',f:[['v','Valor','Ex.: 500'],['p','Diminuir em (%)','Ex.: 15']],
+ fn:v=>{const r=v.v*(1-v.p/100);return{m:`${d(v.v)} − ${P(v.p)} = ${d(r)}`,l:[['Valor final',d(r)],['Desconto',d(v.v*v.p/100)],['Multiplicador',`× ${d(1-v.p/100)}`]]}}},
+{t:'🔙 Qual era o valor inicial antes de um aumento?',h:'O valor aumentou X% e chegou a um valor final.',f:[['p','Aumentou em (%)','Ex.: 25'],['f','Valor final','Ex.: 250']],
+ fn:v=>{const k=1+v.p/100;if(!k)return;const i=v.f/k;return{m:`Valor inicial: ${d(i)}`,l:[['Aumento aplicado',d(v.f-i)],['Cálculo',`${d(v.f)} ÷ ${d(k)}`]]}}},
+{t:'🔙 Qual era o valor inicial antes de uma diminuição?',h:'O valor diminuiu X% e chegou a um valor final.',f:[['p','Diminuiu em (%)','Ex.: 20'],['f','Valor final','Ex.: 80']],
+ fn:v=>{const k=1-v.p/100;if(!k)return;const i=v.f/k;return{m:`Valor inicial: ${d(i)}`,l:[['Diminuição aplicada',d(i-v.f)],['Cálculo',`${d(v.f)} ÷ ${d(k)}`]]}}},
+
+{s:'Mais cálculos'},
+{t:'🧩 X é Y% de qual valor? (achar o total)',f:[['x','Valor X (a parte)','Ex.: 30'],['p','Representa (%)','Ex.: 20']],
+ fn:v=>{if(!v.p)return;const t=v.x*100/v.p;return{m:`${d(v.x)} é ${P(v.p)} de ${d(t)}`,l:[['Valor total',d(t)],['Cálculo',`${d(v.x)} × 100 ÷ ${d(v.p)}`]]}}},
+{t:'↔️ Diferença percentual entre dois valores',h:'Cálculo simétrico: usa a média dos dois valores como base.',f:[['a','Valor A','Ex.: 80'],['b','Valor B','Ex.: 100']],
+ fn:v=>{if(v.a+v.b===0)return;const r=Math.abs(v.a-v.b)/((v.a+v.b)/2)*100;return{m:`Diferença de ${P(r)}`,l:[['Diferença absoluta',d(Math.abs(v.a-v.b))],['Média dos valores',d((v.a+v.b)/2)]]}}},
+{t:'🏷️ Preço de venda a partir do custo',f:[['c','Custo','Ex.: 60'],['p','Percentual desejado (%)','Ex.: 40'],['t','Aplicado como',['Margem (sobre a venda)','Markup (sobre o custo)']]],
+ fn:v=>{const mk=v.t.startsWith('Markup');if(!mk&&v.p>=100)return;const s=mk?v.c*(1+v.p/100):v.c/(1-v.p/100),l=s-v.c;return{m:`Preço de venda: ${d(s)}`,l:[['Lucro',d(l)],['Margem real',P(l/s*100)],['Markup real',v.c?P(l/v.c*100):'—']]}}},
+{t:'💰 Margem de lucro e markup',h:'A partir do custo e do preço de venda.',f:[['c','Custo','Ex.: 60'],['s','Preço de venda','Ex.: 100']],
+ fn:v=>{if(!v.s)return;const l=v.s-v.c,m=l/v.s*100;return{m:`Margem de ${P(m)}`,l:[[l>=0?'Lucro':'Prejuízo',d(l)],['Margem (sobre a venda)',P(m)],['Markup (sobre o custo)',v.c?P(l/v.c*100):'—']]}}},
+{t:'🏦 Juros simples e compostos',f:[['c','Capital','Ex.: 1000'],['i','Taxa por período (%)','Ex.: 2'],['n','Períodos','Ex.: 12']],
+ fn:v=>{const js=v.c*v.i/100*v.n,mc=v.c*Math.pow(1+v.i/100,v.n);return{m:`Montante composto: ${d(mc)}`,l:[['Juros simples',d(js)],['Montante (simples)',d(v.c+js)],['Juros compostos',d(mc-v.c)],['Montante (compostos)',d(mc)]]}}},
+{t:'📍 Diferença em pontos percentuais',h:'Ex.: a taxa foi de 8% para 10%.',f:[['a','Percentual inicial (%)','Ex.: 8'],['b','Percentual final (%)','Ex.: 10']],
+ fn:v=>{const r=v.b-v.a;return{m:r===0?'Sem diferença':`${d(Math.abs(r))} p.p. ${r>0?'a mais':'a menos'}`,l:[['Variação relativa',v.a?P(r/v.a*100):'—']]}}},
+{t:'🔁 Acréscimos e descontos sucessivos',h:'Dois ajustes em sequência (ex.: desconto de 10% e depois mais 5%).',f:[['v','Valor inicial','Ex.: 1000'],['o1','1º ajuste',[UP,DN]],['p1','1º percentual (%)','Ex.: 10'],['o2','2º ajuste',[DN,UP]],['p2','2º percentual (%)','Ex.: 5']],
+ fn:v=>{const a=1+(v.o1===DN?-1:1)*v.p1/100,b=1+(v.o2===DN?-1:1)*v.p2/100,f=v.v*a*b,t=(a*b-1)*100,s=(v.o1===DN?-1:1)*v.p1+(v.o2===DN?-1:1)*v.p2;
+  return{m:`Valor final: ${d(f)}`,l:[['Após o 1º ajuste',d(v.v*a)],['Variação total',P(t)],['Soma simples dos percentuais',P(s)]],n:'Percentuais sucessivos não se somam: o segundo incide sobre o valor já ajustado.'}}},
+{t:'🔢 Fração para porcentagem',f:[['n','Numerador','Ex.: 3'],['q','Denominador','Ex.: 8']],
+ fn:v=>{if(!v.q)return;const r=v.n/v.q*100;return{m:`${d(v.n)}/${d(v.q)} = ${P(r)}`,l:[['Decimal',d(v.n/v.q)]]}}},
+{t:'🔄 Porcentagem para decimal e fração',f:[['p','Porcentagem (%)','Ex.: 37,5']],
+ fn:v=>{const n=Math.round(v.p*100),g=gcd(Math.abs(n),10000)||1;return{m:`${P(v.p)} = ${d(v.p/100)}`,l:[['Decimal',d(v.p/100)],['Fração irredutível',`${n/g}/${10000/g}`],['Multiplicador',`× ${d(v.p/100)}`]]}}}
+];
+
+$('list').innerHTML=C.map((c,i)=>{
+  if(c.s)return`<h3 class="grp">${c.s}</h3>`;
+  const fs=c.f.map(([k,l,x])=>`<div><label for="c${i}_${k}">${l}</label>`+(Array.isArray(x)
+    ?`<select id="c${i}_${k}" data-c="${i}" data-k="${k}">${x.map(o=>`<option>${o}</option>`).join('')}</select>`
+    :`<input id="c${i}_${k}" data-c="${i}" data-k="${k}" type="text" inputmode="decimal" autocomplete="off" placeholder="${x}">`)+`</div>`).join('');
+  return`<section id="s${i}" data-t="${c.t} ${c.h||''}"><h2>${c.t}</h2>${c.h?`<p class="rn" style="margin:0 0 4px">${c.h}</p>`:''}<div class="row">${fs}</div>
+  <div class="r"><p class="big ok"></p><table></table><p class="rn nn"></p><button class="sec cp" type="button">Copiar resultado</button></div></section>`;
+}).join('');
+
+function calc(i){
+  const sec=$('s'+i),box=sec.querySelector('.r'),v={};
+  for(const [k,,x] of C[i].f){
+    if(Array.isArray(x))v[k]=$(`c${i}_${k}`).value;
+    else{const n=num(`c${i}_${k}`);if(isNaN(n)){box.style.display='none';return;}v[k]=n;}
+  }
+  const r=C[i].fn(v);
+  if(!r){box.style.display='none';return;}
+  box.style.display='block';
+  box.querySelector('.big').textContent=r.m;
+  box.querySelector('table').innerHTML=r.l.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('');
+  box.querySelector('.nn').textContent=r.n||'';
+}
+
+const onChg=e=>{const t=e.target;if(t.dataset.c===undefined)return;
+  if(t.tagName==='INPUT')t.value=t.value.replace(/[^\d.,-]/g,'');
+  calc(+t.dataset.c);};
+document.addEventListener('input',onChg);
+document.addEventListener('change',onChg);
+
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('.cp');if(!b)return;
+  const t=b.textContent,txt=b.parentNode.querySelector('.big').textContent;
+  try{await navigator.clipboard.writeText(txt);b.textContent='Copiado!';}catch(_){b.textContent='Não foi possível copiar';}
+  setTimeout(()=>b.textContent=t,1500);
+});
+
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+$('q').addEventListener('input',()=>{
+  const q=norm($('q').value.trim());
+  document.querySelectorAll('section[data-t]').forEach(s=>s.classList.toggle('hide',!!q&&!norm(s.dataset.t).includes(q)));
+  document.querySelectorAll('.grp').forEach(g=>g.classList.toggle('hide',!!q));
+});
+</script>
+</body>
+</html>
